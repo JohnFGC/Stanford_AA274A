@@ -13,3 +13,7 @@ if __name__ == "__main__":
     
     np.random.seed(42)
     x = np.random.normal(size=(4, 10))
+    y = np.square(x[None, :, :] - x[:, None, :])
+    z = np.sum(y, axis=2)
+    print(z)
+    
