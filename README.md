@@ -1,1 +1,1 @@
-# We Build Autonomous Robots# stanford_ee260A
+# We Build Autonomous Robots
