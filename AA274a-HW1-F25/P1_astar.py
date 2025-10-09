@@ -55,7 +55,7 @@ class AStar(object):
         HINT: This should take one line. Tuples can be converted to numpy arrays using np.array().
         """
         ########## Code starts here ##########
-        return np.linalg.norm(np.array(x1) - np.array(x2))        
+        return np.linalg.norm(np.array(x1) - np.array(x2), ord=np.inf)        
         ########## Code ends here ##########
 
     def snap_to_grid(self, x):

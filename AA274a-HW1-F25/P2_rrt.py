@@ -106,7 +106,29 @@ class RRT(object):
         #   - the order in which you pass in arguments to steer_towards and is_free_motion is important
 
         ########## Code starts here ##########
-
+        for k in range(1, max_iters):
+            x_rand = None
+            z = np.random.random()
+            if z < goal_bias:
+                x_rand = self.x_goal
+            else:
+                x_rand = self.statespace_lo + np.random.rand(state_dim) * (self.statespace_hi - self.statespace_lo)
+            x_near_index = self.find_nearest(V[range(n),:], x_rand)
+            x_near = V[x_near_index,:]
+            x_new = self.steer_towards(x_near, x_rand, eps)
+            if self.is_free_motion(self.obstacles, x_near, x_new):
+                V[n,:] = x_new
+                P[n] = x_near_index
+                if np.array_equal(x_new, self.x_goal):
+                    self.path = []
+                    n_traverseBackwards = n
+                    while n_traverseBackwards >= 0:
+                        x_traverseBackwards = V[n_traverseBackwards, :]
+                        self.path = [x_traverseBackwards] + self.path
+                        n_traverseBackwards = P[n_traverseBackwards]
+                    success = True
+                    break
+                n += 1
         ########## Code ends here ##########
 
         plt.figure()
@@ -144,7 +166,14 @@ class RRT(object):
             None, but should modify self.path
         """
         ########## Code starts here ##########
-
+        success = False
+        while not success:
+            success = True
+            for i in range(1, len(self.path) - 1):
+                if self.is_free_motion(self.obstacles, self.path[i-1], self.path[i+1]):
+                    self.path.pop(i)
+                    success = False
+                    break
         ########## Code ends here ##########
 
 class GeometricRRT(RRT):
@@ -157,7 +186,13 @@ class GeometricRRT(RRT):
         # Consult function specification in parent (RRT) class.
         ########## Code starts here ##########
         # Hint: This should take 1-3 line.
-
+        minDist = np.inf
+        minIndex = None
+        for i in range(V.shape[0]):
+            if np.linalg.norm(V[i,:] - np.array(x)) < minDist:
+                minDist = np.linalg.norm(np.array(V[i,:]) - np.array(x))
+                minIndex = i
+        return minIndex         
         ########## Code ends here ##########
         pass
 
@@ -165,7 +200,9 @@ class GeometricRRT(RRT):
         # Consult function specification in parent (RRT) class.
         ########## Code starts here ##########
         # Hint: This should take 1-4 line.
-
+        if np.linalg.norm(np.array(x2) - np.array(x1)) <= eps:
+            return np.array(x2)
+        return np.array(x1) + ((np.array(x2) - np.array(x1))/np.linalg.norm(np.array(x2) - np.array(x1))) * eps
         ########## Code ends here ##########
         pass
 
