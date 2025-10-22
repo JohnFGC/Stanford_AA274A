@@ -12,7 +12,7 @@ class HeadingController(BaseHeadingController):
         self.kp = 2.0
         
     def compute_control_with_goal(self, state: TurtleBotState, goal: TurtleBotState) -> TurtleBotControl:
-        err = wrap_angle(goal.theta - state.theta)
+        err = wrap_angle(goal.theta - state.theta) #in [-pi, pi]
         msg = TurtleBotControl()
         msg.omega = self.kp * err
         return msg   
