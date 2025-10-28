@@ -11,7 +11,7 @@ from asl_tb3_msgs.msg import TurtleBotControl, TurtleBotState
 from scipy.interpolate import splev, splrep
 
 class Navigator(BaseNavigator):
-    def __init__(self, kpx = 6.0, kpy = 6.0, kdx = 4.0, kdy = 4.0) -> None:
+    def __init__(self, kpx = 4.5, kpy = 4.5, kdx = 2.5, kdy = 2.5) -> None:
         super().__init__()
         self.kp = 2.0
         
